@@ -11,32 +11,69 @@ app = FastAPI()
 # Update Firmware
 
 @app.post("/firmware")
+async def firmware():
+    try:
+        directory = "/opt/frimware"
+        command = "git pull"
+        args = shlex.split(command)
 
-async def firmware_update():
+        subprocess.run(args, cwd=directory, capture_output=True, text=True)
+
+        return {'error': False, 'message': "Firmware telah di update"}
+    except:
+        return {'error': True, 'message': 'firmware gagal di update'}
+
+@app.post("/firmware-restart")
+async def firmware():
+    try:
+        directory = "/opt/frimware"
+        command = "reboot"
+        args = shlex.split(command)
+
+        subprocess.run(args, cwd=directory, capture_output=True, text=True)
+
+        return {'error': False, 'message': "Firmware telah di reboot"}
+    except:
+        return {'error': True, 'message': 'firmware gagal di reboot'}
+    
+
+@app.post("/firmware-shutdown")
+async def firmware():
+    try:
+        directory = "/opt/frimware"
+        command = "shutdown now"
+        args = shlex.split(command)
+
+        subprocess.run(args, cwd=directory, capture_output=True, text=True)
+
+        return {'error': False, 'message': "Firmware telah di shutdown"}
+    except:
+        return {'error': True, 'message': 'firmware gagal di shutdown'}
+
+
+@app.post("/container-up")
+async def composer_up():
     cmd = 'docker-compose up --force-recreate',
     try:
-        directory = "/opt/firmware"
+        directory = "/opt/software"
         command = "docker compose up -d"
         args = shlex.split(command)
 
         subprocess.run(args, cwd=directory, capture_output=True, text=True)
 
-        return {'error': False, 'message': "System telah diupdate"}
+        return {'error': False, 'message': "Container telah diupdate"}
     except:
-        return {'error': True, 'message': "System Gagal diupdate"}
+        return {'error': True, 'message': "Container Gagal diupdate"}
 
 @app.get('/firmware')
-
 async def firmware_version():
     return "wow"
 
 # Restart Firmware
 @app.post("/restart")
-
 async def firmware_update():
-    cmd = 'docker-compose restart',
     try:
-        directory = "/opt/firmware"
+        directory = "/opt/software"
         command = "docker compose restart"
         args = shlex.split(command)
 
@@ -45,7 +82,6 @@ async def firmware_update():
         return {'error': False, 'message': "System telah direstart"}
     except:
         return {'error': True, 'message': "System Gagal direstart"}
-
 
 
 if __name__=="__main__":
