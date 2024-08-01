@@ -26,7 +26,7 @@ async def firmware():
 @app.post("/firmware-restart")
 async def firmware():
     try:
-        directory = "/opt/frimware"
+        directory = "/opt/software"
         command = "reboot"
         args = shlex.split(command)
 
@@ -40,7 +40,7 @@ async def firmware():
 @app.post("/firmware-shutdown")
 async def firmware():
     try:
-        directory = "/opt/frimware"
+        directory = "/opt/software"
         command = "shutdown now"
         args = shlex.split(command)
 
@@ -53,10 +53,9 @@ async def firmware():
 
 @app.post("/container-up")
 async def composer_up():
-    cmd = 'docker-compose up --force-recreate',
     try:
-        directory = "/opt/software"
-        command = "docker compose up -d"
+        directory = "/opt/firmware"
+        command = "docker-compose up -d"
         args = shlex.split(command)
 
         subprocess.run(args, cwd=directory, capture_output=True, text=True)
@@ -70,11 +69,11 @@ async def firmware_version():
     return "wow"
 
 # Restart Firmware
-@app.post("/restart")
-async def firmware_update():
+@app.post("/container-restart")
+async def container_restart():
     try:
-        directory = "/opt/software"
-        command = "docker compose restart"
+        directory = "/opt/firmware"
+        command = "docker-compose restart"
         args = shlex.split(command)
 
         subprocess.run(args, cwd=directory, capture_output=True, text=True)
@@ -85,4 +84,4 @@ async def firmware_update():
 
 
 if __name__=="__main__":
-    uvicorn.run("API:app",host='0.0.0.0', port=8000, reload=True, workers=3) 
+    uvicorn.run("man:app",host='0.0.0.0', port=8000, reload=True, workers=3) 
